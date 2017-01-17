@@ -1,11 +1,9 @@
 import { combineReducers } from 'redux';
-import PostsIndexReducer from './posts_reducer'
-import {reducer as formReducer} from 'redux-form'
+import usersReducer from './users_reducer'
 
 const rootReducer = combineReducers({
   // state: (state = {}) => state   //初始化写法
-  posts: PostsIndexReducer,
-  form: formReducer,
+  users: usersReducer
 });
 
 export default rootReducer;

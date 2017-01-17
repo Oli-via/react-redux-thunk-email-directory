@@ -1,57 +1,30 @@
 import axios from 'axios'
 
-const ROOT_URL = `http://reduxblog.herokuapp.com/api`
-const KEY = '?key=olivialovesya'
+export function fetchUsers() {
+  const request = axios.get(`http://jsonplaceholder.typicode.com/users`);
+  // Vanilla redux expects us to return an action,
+  // this is a rule that we don't want to obey,
+  // when we have a request object here, we don't yet have any data to return from this function
+  // we have to wait for the request to resolve before i actually have any data to send across to my dispatch method
+  // so let's make use of redux thunk
 
-//常量前面不要忘记写export
-export const FETCH_POSTS_INDEX = 'FETCH_POSTS_INDEX'
-export const CREATE_POST = 'CREATE_POST'
-export const FETCH_POST = 'FETCH_POST'
-export const CLEAR_DETAIL = 'CLEAR_DETAIL'
-export const DELETE_POST = 'DELETE_POST'
-export const CLEAR_POSTS = 'CLEAR_POSTS'
+  // the first thing we are going to do with redux thunk is we need to realize that
+  // all of the existing rules for action creators is kind of go out the window 无效
+  // vanilla redux expects us to return in action which is a plain javascript object
+  // redux thunk on the other hand, enables one other return type and that is a plain javascript function.
+  // so only with redux thunk are we able to return a plain javascript function as below
 
+  // the first argument is dispatch method, and the dispatch method is essentially that big funnel/pipe
+  // if we pass an action into dispatch, it's going to be sent off to all of our different reducers
+  return (dispatch)=>{
+    // wait for the request to resolve with some amount of data
+    // and then only then the request has actually resolved, am i going to dispatch an action
+    request.then(({data})=>{
+      dispatch({
+        type: 'FETCH_PROFILES',
+        payload: data
+      })
+    })
 
-export function fetchPosts() {
-  const request = axios.get(`${ROOT_URL}/posts${KEY}`); //const request要写在函数里面
-  return {
-    type: FETCH_POSTS_INDEX,
-    payload: request
-  }
-}
-
-export function createPost(props) {
-  const postRequest = axios.post(`${ROOT_URL}/posts${KEY}`, props); //直接写props就可以把form表单中的内容提交
-  return {
-    type: CREATE_POST,
-    payload: postRequest
-  }
-}
-
-export function fetchPost(id) {
-  const request = axios.get(`${ROOT_URL}/posts/${id}${KEY}`); //const request要写在函数里面
-  return {
-    type: FETCH_POST,
-    payload: request
-  }
-}
-
-export function clearDetail() {
-  return {
-    type: CLEAR_DETAIL
-  }
-}
-
-export function clearPosts() {
-  return {
-    type: CLEAR_POSTS
-  }
-}
-
-export function deletePost(id) {
-  const request = axios.delete(`${ROOT_URL}/posts/${id}${KEY}`)
-  return {
-    type: DELETE_POST,
-    payload: request
   }
 }
